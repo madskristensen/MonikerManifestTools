@@ -1,6 +1,6 @@
 # Image Manifest Tools
 
-[![Build status](https://ci.appveyor.com/api/projects/status/85xmotii0u1n5rtd?svg=true)](https://ci.appveyor.com/project/madskristensen/knownmonikersexplorer)
+[![Build status](https://ci.appveyor.com/api/projects/status/280icv4t8pe09akw?svg=true)](https://ci.appveyor.com/project/madskristensen/monikermanifesttools)
 
 Makes it easier to create and maintain .imagemanifest files for Visual Studio extension.
 
