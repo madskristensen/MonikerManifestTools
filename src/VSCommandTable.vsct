@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <Extern href="stdidcmd.h"/>
+  <Extern href="vsshlids.h"/>
+  <Include href="KnownImageIds.vsct"/>
+
+  <Commands package="guidPackage">
+    <Buttons>
+      <Button guid="guidPackageCmdSet" id="CreateManifest" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_FOLDER_ADD"/>
+        <Icon guid="ImageCatalogGuid" id="ImageGenerator"/>
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Generate Image Manifest...</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+
+  <VisibilityConstraints>
+    <!--<VisibilityItem guid="guidPackageCmdSet" id="CreateManifest" context="guidVsixProject" />-->
+  </VisibilityConstraints>
+
+  <Symbols>
+    <!-- This is the package guid. -->
+    <GuidSymbol name="guidPackage" value="{cfcd9783-7294-4253-8667-7f685139857a}" />
+    <GuidSymbol name="guidVsixProject" value="{a5d207b6-3782-4c7b-8010-6cec051c2520}" />
+
+    <!-- This is the guid used to group the menu commands together -->
+    <GuidSymbol name="guidPackageCmdSet" value="{7079c532-705a-40f6-bb4a-360c9bb5f8e6}">
+      <IDSymbol name="CreateManifest" value="0x0100" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>
