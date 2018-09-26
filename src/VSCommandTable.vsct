@@ -19,9 +19,9 @@
     </Buttons>
   </Commands>
 
-  <VisibilityConstraints>
-    <!--<VisibilityItem guid="guidPackageCmdSet" id="CreateManifest" context="guidVsixProject" />-->
-  </VisibilityConstraints>
+  <!--<VisibilityConstraints>
+    <VisibilityItem guid="guidPackageCmdSet" id="CreateManifest" context="guidVsixProject" />
+  </VisibilityConstraints>-->
 
   <Symbols>
     <!-- This is the package guid. -->
