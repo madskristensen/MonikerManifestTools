@@ -39,21 +39,24 @@ namespace MonikerManifestTools
             Assumes.Present(dte);
 
             ProjectItem item = dte.SelectedItems.Item(1)?.ProjectItem;
-            string folder = item?.FileNames[1];
+            Project project = item?.ContainingProject;
 
-            if (!TryGetFileName(folder, out string manifestFileName))
-            {
+            if (project == null)
                 return;
-            }
 
-            dte.CheckFileOutOfSourceControl(manifestFileName);
+            string projectPath = project.Properties.Item("FullPath").Value.ToString().TrimEnd('\\');
+            string manifestFilePath = Path.Combine(projectPath, "Monikers.imagemanifest");
 
-            if (TryGenerateManifest(item, manifestFileName))
+            dte.CheckFileOutOfSourceControl(manifestFilePath);
+
+            if (TryGenerateManifest(item, manifestFilePath))
             {
-                IncludeManifestInProjectAndVsix(item.ContainingProject, manifestFileName);
+                string folder = item?.FileNames[1];
+
+                IncludeManifestInProjectAndVsix(item.ContainingProject, manifestFilePath);
                 SetInputImagesAsResource(item.ContainingProject, folder);
 
-                VsShellUtilities.OpenDocument(package, manifestFileName);
+                VsShellUtilities.OpenDocument(package, manifestFilePath);
 
                 dte.ExecuteCommand("SolutionExplorer.SyncWithActiveDocument");
             }
@@ -78,7 +81,7 @@ namespace MonikerManifestTools
             }
         }
 
-        private static bool TryGenerateManifest(ProjectItem item, string manifestFileName)
+        private static bool TryGenerateManifest(ProjectItem item, string manifestFilePath)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -96,14 +99,14 @@ namespace MonikerManifestTools
                 string toolsDir = Path.Combine(root, "Resources");
 
                 string assemblyName = project.Properties.Item("AssemblyName").Value.ToString();
-                string manifestName = Path.GetFileName(manifestFileName);
+                string manifestName = Path.GetFileName(manifestFilePath);
 
 
-                string args = $"/manifest:\"{manifestName}\" /assembly:\"{assemblyName}\" /resources:\"{folder}\" /guidName:{Path.GetFileNameWithoutExtension(manifestFileName)}Guid /rootPath:\"{projectPath}\"";
+                string args = $"/manifest:\"{manifestName}\" /assembly:\"{assemblyName}\" /resources:\"{folder}\" /guidName:{Path.GetFileNameWithoutExtension(manifestFilePath)}Guid /rootPath:\"{projectPath}\"";
 
                 var start = new ProcessStartInfo
                 {
-                    WorkingDirectory = folder,
+                    WorkingDirectory = projectPath,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     FileName = Path.Combine(toolsDir, "ManifestFromResources.exe"),
@@ -117,7 +120,7 @@ namespace MonikerManifestTools
                     p.WaitForExit();
                 }
 
-                return File.Exists(manifestFileName);
+                return File.Exists(manifestFilePath);
             }
             catch (Exception ex)
             {
@@ -127,31 +130,11 @@ namespace MonikerManifestTools
             return false;
         }
 
-        private static bool TryGetFileName(string initialDirectory, out string fileName)
-        {
-            fileName = null;
-
-            using (var dialog = new SaveFileDialog())
-            {
-                dialog.InitialDirectory = initialDirectory;
-                dialog.FileName = "Monikers";
-                dialog.DefaultExt = ".imagemanifest";
-                dialog.Filter = "Image Manifest files | *.imagemanifest";
-
-                if (dialog.ShowDialog() != DialogResult.OK)
-                    return false;
-
-                fileName = dialog.FileName;
-            }
-
-            return true;
-        }
-
-        private static void IncludeManifestInProjectAndVsix(Project project, string fileName)
+        private static void IncludeManifestInProjectAndVsix(Project project, string filePath)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            ProjectItem item = project.DTE.AddFileToProject(project, fileName);
+            ProjectItem item = project.DTE.AddFileToProject(project, filePath, itemType: "content");
 
             var solution = (IVsSolution)Package.GetGlobalService(typeof(SVsSolution));
 
@@ -159,7 +142,7 @@ namespace MonikerManifestTools
 
             if (hierarchy is IVsBuildPropertyStorage buildPropertyStorage)
             {
-                hierarchy.ParseCanonicalName(fileName, out uint itemId);
+                hierarchy.ParseCanonicalName(filePath, out uint itemId);
                 buildPropertyStorage.SetItemAttribute(itemId, "IncludeInVSIX", "true");
             }
         }
