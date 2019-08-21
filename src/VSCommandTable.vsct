@@ -13,7 +13,7 @@
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Generate Image Manifest...</ButtonText>
+          <ButtonText>Generate Image Manifest</ButtonText>
         </Strings>
       </Button>
     </Buttons>

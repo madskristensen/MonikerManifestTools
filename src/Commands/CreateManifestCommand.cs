@@ -1,14 +1,13 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Windows.Forms;
-using EnvDTE;
+﻿using EnvDTE;
 using EnvDTE80;
 using Microsoft;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using System;
+using System.ComponentModel.Design;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using Task = System.Threading.Tasks.Task;
 
 namespace MonikerManifestTools
@@ -17,7 +16,7 @@ namespace MonikerManifestTools
     {
         public static async Task InitializeAsync(AsyncPackage package)
         {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             var commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
             Assumes.Present(commandService);
@@ -42,7 +41,9 @@ namespace MonikerManifestTools
             Project project = item?.ContainingProject;
 
             if (project == null)
+            {
                 return;
+            }
 
             string projectPath = project.Properties.Item("FullPath").Value.ToString().TrimEnd('\\');
             string manifestFilePath = Path.Combine(projectPath, "Monikers.imagemanifest");
@@ -57,8 +58,6 @@ namespace MonikerManifestTools
                 SetInputImagesAsResource(item.ContainingProject, folder);
 
                 VsShellUtilities.OpenDocument(package, manifestFilePath);
-
-                dte.ExecuteCommand("SolutionExplorer.SyncWithActiveDocument");
             }
         }
 
@@ -89,7 +88,9 @@ namespace MonikerManifestTools
             string folder = item?.FileNames[1]?.TrimEnd('\\');
 
             if (project == null)
+            {
                 return false;
+            }
 
             try
             {
