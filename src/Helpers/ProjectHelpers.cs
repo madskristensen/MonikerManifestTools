@@ -28,7 +28,7 @@ namespace MonikerManifestTools
             };
         }
 
-        public static ProjectItem AddFileToProject(this _DTE dte, Project project, string file, string itemType = null)
+        public static ProjectItem AddFileToProject(this DTE2 dte, Project project, string file, string itemType = null)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -54,7 +54,9 @@ namespace MonikerManifestTools
             try
             {
                 if (item == null || item.ContainingProject == null)
+                {
                     return;
+                }
 
                 item.Properties.Item("ItemType").Value = itemType;
             }
