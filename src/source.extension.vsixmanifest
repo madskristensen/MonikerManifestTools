@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="d5ed0bf3-4e8d-4199-b1ff-6c271e08bd0b" Version="1.0" Language="en-US" Publisher="Mads Kristensen" />
+    <Identity Id="04f92311-4748-4f87-9d94-1aae42483d1f" Version="1.1" Language="en-US" Publisher="Mads Kristensen" />
     <DisplayName>Image Manifest Tools</DisplayName>
     <Description xml:space="preserve">Makes it easier to create and maintain .imagemanifest files for Visual Studio extension</Description>
     <MoreInfo>https://github.com/madskristensen/MonikerManifestTools</MoreInfo>
@@ -11,7 +11,9 @@
     <Tags>image, manifest, vsix</Tags>
   </Metadata>
   <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0, 17.0)" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
   </Installation>
   <Prerequisites>
     <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
